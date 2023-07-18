@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{ layout/layout1 :: layout(~{::head},~{::main})}">
+<head>
+	
+</head>
+<main>
+	<h1>메인영역</h1>
+	<div class="wrap view-size">
+		<section id="goods-list">
+			<h1>상품목록 페이지</h1>
+			<div class="wrap">
+				<p class="tit">상품목록 페이지</p>
+				<div class="flex end">
+					<a href="/goods/new">상품등록</a>
+				</div>
+				<table>
+					<tr>
+						<td>상품번호</td>
+						<td>사진</td>
+						<td>상품명</td>
+						<td>가격</td>
+						<td>등록일</td>
+					</tr>
+					<tr th:each="dto : ${list}">
+						<td th:text="${dto.gno}">상품번호</td>
+						<td>
+							<th:block th:each="img :${dto.imgs}">
+							<img th:src="${img.url+img.name}" width="80px">
+							</th:block>
+						</td>
+						<td th:text="${dto.name}">상품명</td>
+						<td>
+							<span th:text="${#numbers.formatInteger(dto.price,3,'COMMA')}">가격</span>
+							<span>원</span>
+						</td>
+						<td th:text="${dto.updatedDate.toLocalDate}">등록일</td>
+					</tr>
+				</table>
+			</div>
+		</section>
+	</div>
+</main>
+</html>

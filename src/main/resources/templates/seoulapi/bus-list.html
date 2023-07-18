@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="//www.thymeleaf.org"
+	th:replace="layout/layout1 :: layout(~{::head},~{this::main})" >
+<head>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=241d7a2c638b9e07b5a831ff43d4578c&libraries=services"></script>
+	<script>
+	/* //문서가 로딩되고 나서 실행되는 jqeury ready() */
+		var map;
+		$(function(){
+			var container = document.getElementById('map');
+			var options = {
+				center: new kakao.maps.LatLng(33.450701, 126.570667),
+				level: 3
+			};
+
+			map= new kakao.maps.Map(container, options);
+			// 주소-좌표 변환 객체를 생성합니다
+			var geocoder = new kakao.maps.services.Geocoder();
+
+			// 주소로 좌표를 검색합니다
+			geocoder.addressSearch('서울시 종로구 혜화동', function(result, status) {
+
+			    // 정상적으로 검색이 완료됐으면 
+			     if (status === kakao.maps.services.Status.OK) {
+
+			        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+			        // 결과값으로 받은 위치를 마커로 표시합니다
+			        var marker = new kakao.maps.Marker({
+			            map: map,
+			            position: coords
+			        });
+
+			        // 인포윈도우로 장소에 대한 설명을 표시합니다
+			        /* 
+			        var infowindow = new kakao.maps.InfoWindow({
+			            content: '<div style="width:150px;text-align:center;padding:6px 0;">서울시청</div>'
+			        });
+			        infowindow.open(map, marker);
+					 */	
+			        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+			        map.setCenter(coords);
+			    } 
+			}); 
+			
+			///////////////////////////////////////////
+			makeMarker();
+			
+			
+			
+		});
+		
+	///////////////////////////////마커 표기	
+	function makeMarker(){
+		// 마커를 표시할 위치와 title 객체 배열입니다 
+		var positions = [
+		    {
+		        title: '종로2가사거리', 
+		        latlng: new kakao.maps.LatLng(37.5697651251, 126.9877498816)
+		    },
+		    {
+		        title: '창경궁.서울대학교병원', 
+		        latlng: new kakao.maps.LatLng(37.5791830159, 126.9965660023)
+		    },
+		    {
+		        title: '명륜3가.성대입구', 
+		        latlng: new kakao.maps.LatLng(37.5826711749, 126.9983401004)
+		    },
+		    {
+		        title: '종로2가.삼일교', 
+		        latlng: new kakao.maps.LatLng(37.568579273, 126.9876130976)
+		    },
+		    {
+		        title: '혜화동로터리.여운형활동터', 
+		        latlng: new kakao.maps.LatLng(37.586243, 127.001744)
+		    }
+		];
+
+		// 마커 이미지의 이미지 주소입니다
+		var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
+		    
+		for (var i = 0; i < positions.length; i ++) {
+		    
+		    // 마커 이미지의 이미지 크기 입니다
+		    var imageSize = new kakao.maps.Size(24, 35); 
+		    
+		    // 마커 이미지를 생성합니다    
+		    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+		    
+		    // 마커를 생성합니다
+		    var marker = new kakao.maps.Marker({
+		        map: map, // 마커를 표시할 지도
+		        position: positions[i].latlng, // 마커를 표시할 위치
+		        title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+		        image : markerImage // 마커 이미지 
+		    });
+		}
+	}
+		
+	</script>
+</head>	
+<main>
+	<h1>메인영역</h1>
+	<div class="wrap view-size">
+		<section >
+			<h1>게시글내용</h1>
+			<div class="wrap">
+				<p class="tit">버스 정보</p>
+				<ul class="flex">
+					<li>정류소번호</li>
+					<li>정류소명</li>
+					<li>XCODE</li>
+					<li>YCODE</li>
+				</ul>
+				<ol class="flex" th:each="dto:${list}">
+					<li th:text="${dto.STOP_NO}">정류소번호</li>
+					<li th:text="${dto.STOP_NM}">정류소명</li>
+					<li th:text="${dto.XCODE}">XCODE</li>
+					<li th:text="${dto.YCODE}">YCODE</li>
+				</ol>
+				<div id="map" style="width:800px;height:600px;"></div>
+			</div>
+		</section>
+	</div>
+</main>
+</html>
